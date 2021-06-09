@@ -81,6 +81,7 @@ def Folder_FileList():
     messagebox.showinfo(title="Finish", message="Job Finished!")
     return
 
+#Excel 파일 합치기
 def Excel_Merge():
     files = [f for f in os.listdir(df.Detail[0]) if re.match('.*[.]xls', f)]
     elist=[]
@@ -91,10 +92,22 @@ def Excel_Merge():
     messagebox.showinfo(title="Finish", message="Job Finished!")
     return
 
+#Excel 파일 양식에 따라 병합하기
+def Excel_ReArg():
+    files = [f for f in os.listdir(df.Detail[0]) if re.match('.*[.]xls', f)]
+    dfMap = pd.read_excel(dff.Detail[1], sheet_name='Mapping')
+    dfH = pd.read_excel(dff.Detail[1], sheet_name='Head')
+    elist = []
+    dfs = pd.DataFrame(elist)
+    for file in files:
+        dfs = Excel_F.Excel_ReA(file,df.Detail[0],dfMap,dfH,dfs)
+    dfs.to_excel(df.Detail[1] + "/" + "ReArrange_Result.xlsx",index=False)
+    messagebox.showinfo(title="Finish", message="Job Finished!")
+    return
 
 # 창 호출 & 초기값 설정
 win = Tk()
-win.geometry("600x700")
+win.geometry("600x800")
 win.title('Tricks_Office')
 
 df= pd.read_excel("Master/Master.xlsx",sheet_name="Master")
@@ -208,13 +221,22 @@ frameXl.pack()
 # 엑셀 표기
 Label(frameXl,text = "Excel 전용").grid(row=0,column=0)
 
-# File List
+# 엑셀 파일 병합
 MXlbtn = Button(frameXl, text="Excel Merge",width = 21,
                       height=2,command=Excel_Merge)
 MXlbtn.grid(row=1, column=0,padx=5)
 MXllbl = Label(frameXl, text="대상 폴더에 있는 엑셀 파일을 Merge",
                      width=50,height=2,relief="groove")
 MXllbl.grid(row=1, column=1)
+
+# 엑셀 파일 양식에 맞춰서 재배열 병합
+RAXlbtn = Button(frameXl, text="Excel ReArrange",width = 21,
+                      height=2,command=Excel_ReArg)
+RAXlbtn.grid(row=2, column=0,padx=5)
+RAXllbl = Label(frameXl, text="양식에 맞춰서 엑셀 파일을 재정렬 후 병합 \n"
+                              "Format 파일이 지정되어 있어야 합니다.",
+                     width=50,height=2,relief="groove")
+RAXllbl.grid(row=2, column=1)
 
 
 # frame3 Font 리스트 상자 만들기
