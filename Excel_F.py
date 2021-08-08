@@ -25,6 +25,7 @@ def Excel_ReA(file,SPath,dfMap,dfH,dfs):
     df1=pd.read_excel(SPath + "/" + file, skiprows = l_row)
     for index, row in dfMap.iterrows():
         df1.rename(columns = {row[0]:row[1]}, inplace = True)
+    df1.to_excel("D:/Work/RPA/TO_Test/Test.xlsx")
     frames = pd.DataFrame(df1,columns=dfH.Header)
     frames = pd.concat([dfs, frames]).drop_duplicates()
     return frames
